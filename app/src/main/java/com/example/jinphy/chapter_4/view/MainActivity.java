@@ -1,15 +1,15 @@
 package com.example.jinphy.chapter_4.view;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jinphy.chapter_4.R;
-import com.example.jinphy.chapter_4.utils.InjectView;
-import com.example.jinphy.chapter_4.utils.OnClick;
-import com.example.jinphy.chapter_4.utils.ViewUtils;
+import com.jinphy.annotation.inject.InjectView;
+import com.jinphy.annotation.inject.Injector;
+import com.jinphy.annotation.inject.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,8 +21,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.findViewById(R.id.text_view);
-        ViewUtils.injectViews(this);
-        ViewUtils.injectListeners(this);
+        Injector.injectViews(this);
+        Injector.injectListeners(this);
         textView.setText("注入成功");
     }
 

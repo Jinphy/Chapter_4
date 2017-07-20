@@ -1,4 +1,4 @@
-package com.example.jinphy.chapter_4.utils;
+package com.jinphy.annotation.inject;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.IntRange;
@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * View对象的自动注入注解，
  * 一个View对象字段加了该注解后，可以实现自动注入，从而避免了
  * 为每个View对象调用findView() 方法的繁琐
- * @see com.example.jinphy.chapter_4.utils.ViewUtils
+ * @see Injector
  * Created by jinphy on 2017/7/20.
  */
 

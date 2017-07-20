@@ -1,4 +1,4 @@
-package com.example.jinphy.chapter_4.utils;
+package com.jinphy.annotation.inject;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.IntRange;
@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  * View对象的监听器注入注解，
  * 用来对android中的View对象进行自动注入View.OnClickListener，
  * 从而避免的手动调用每个View对象的setOnClickListener()方法的繁琐操作
- * @see com.example.jinphy.chapter_4.utils.ViewUtils
+ * @see Injector
  *
  * Created by jinphy on 2017/7/20.
  */

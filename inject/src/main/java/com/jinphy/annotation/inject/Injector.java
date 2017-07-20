@@ -1,4 +1,4 @@
-package com.example.jinphy.chapter_4.utils;
+package com.jinphy.annotation.inject;
 
 import android.app.Activity;
 import android.view.View;
@@ -8,10 +8,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
+ * 注入器
+ * 自动注入View和View对象的ViewOnClickListener
+ * 所以开发者不用自己手动调用findViewById()和setOnClickListener()
+ * @see InjectView
+ * @see OnClick
  * Created by jinphy on 2017/7/20.
  */
 
-public class ViewUtils {
+public class Injector {
 
     //------------------------------------------------------------------------------------/
     //---------------------- public method -----------------------------------------------/
@@ -20,23 +25,23 @@ public class ViewUtils {
      * 在activity中注入View，从而取代所有的findViewById()方法
      * 和为所有的需要设置OnClickListener的View注入该监听器，从而取代
      * setOnClickListener()方法
-     * @see com.example.jinphy.chapter_4.utils.ViewUtils#injectViews(Activity)
-     * @see com.example.jinphy.chapter_4.utils.ViewUtils#injectListeners(Activity)
+     * @see Injector#injectViews(Activity)
+     * @see Injector#injectListeners(Activity)
      * @param activity 将要进行注入的activity对象
      * */
     public static void inject(Activity activity) {
         // 注入View 来代替在代码中使用findViewById()
-        ViewUtils.injectViews(activity);
+        Injector.injectViews(activity);
 
         // 注入View.OnClickListener 来代替setOnClickListener()
-        ViewUtils.injectListeners(activity);
+        Injector.injectListeners(activity);
     }
 
     /**
      * 根据传进来的Activity对象，将该对象的所有使用InjectView注解的字段
      * 都根据注解的id进行注入
      * @param activity 将要使用注解注入相应字段的Activity对象
-     * @see com.example.jinphy.chapter_4.utils.ViewUtils#inject(Activity)
+     * @see Injector#inject(Activity)
      *
      * */
     public static void injectViews(Activity activity){
@@ -62,7 +67,7 @@ public class ViewUtils {
      * 都注册该方法对应的监听器
      *
      * @param activity 持有这些注解方法的activity对象
-     * @see com.example.jinphy.chapter_4.utils.ViewUtils#inject(Activity)
+     * @see Injector#inject(Activity)
      * */
     public static void injectListeners(Activity activity) {
         // activity对象对应的类对象
