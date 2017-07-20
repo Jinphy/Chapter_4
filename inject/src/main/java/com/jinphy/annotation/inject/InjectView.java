@@ -2,6 +2,7 @@ package com.jinphy.annotation.inject;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,6 +20,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface InjectView {
+
     @IdRes @IntRange(from = 1)
     int id();
+
+    @NonNull
+    String onClick() default "";
 }

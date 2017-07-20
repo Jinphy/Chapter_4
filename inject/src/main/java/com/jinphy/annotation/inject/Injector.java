@@ -1,6 +1,7 @@
 package com.jinphy.annotation.inject;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.View;
 
 import java.lang.reflect.Field;
@@ -47,15 +48,15 @@ public class Injector {
     public static void injectViews(Activity activity){
         // activity的类对象
         Class activityClass = activity.getClass();
-        // 获取该累的所有字段
-        Field[] fields = activityClass.getDeclaredFields();
-        for (Field field : fields) {
+        // 获取该累的所有字段，即所有的View
+        Field[] views = activityClass.getDeclaredFields();
+        for (Field view : views) {
             // 获取对应字段的InjectView注解对象
-            InjectView annotation = field.getAnnotation(InjectView.class);
+            InjectView annotation = view.getAnnotation(InjectView.class);
             // 筛选所有使用InjectView注解的字段
             if (annotation!=null) {
                 // 注入该字段
-                injectView(activity,field,annotation);
+                injectView(activity,view,annotation);
             }
         }
     }
@@ -90,21 +91,70 @@ public class Injector {
     //----------------------////////////////-----------------------------------------------/
     //---------------------- private method -----------------------------------------------/
 
+
+    // 通过id为field字段赋值
+    private static View doId(Activity activity,Field field,int id){
+        // 根据id 查找相应的View对象
+        View view = activity.findViewById(id);
+        // 为null则返回
+        if (view==null)
+            return null;
+        // 私有字段必须设置该方法为true才能进行接下来的访问或赋值
+        field.setAccessible(true);
+
+        try {
+            // 将findViewById得到的对象赋值给对应的field
+            field.set(activity,view);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return view;
+    }
+
+    // 通过onClick函数名为View设置点击监听器
+    private static void doOnClick(Activity activity,View view,String onClick) {
+        if (!TextUtils.isEmpty(onClick)) {
+            //如果函数名不为空，则继续处理
+
+            // 根据函数名获取函数
+            Method temp=null;
+            try {
+                temp = activity.getClass().getDeclaredMethod(onClick,View.class);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+                temp=null;
+            }
+
+            if (temp != null) {
+                // 如果函数存在，则为View设置点击监听器
+                final Method method = temp;
+                View.OnClickListener listener = v->invoke(method,activity,v);
+                view.setOnClickListener(listener);
+            }
+
+        }
+
+    }
+
+
     // 注入单个加了InjectView注解的字段
     private static void injectView(Activity activity,Field field, InjectView annotation) {
 
         // 获取该注解对象对应的id 字段的值
         int id = annotation.id();
-        // 私有字段必须设置该方法为true才能进行接下来的访问或赋值
-        field.setAccessible(true);
-        try {
-            // 将findViewById得到的对象赋值给对应的field
-            field.set(activity,activity.findViewById(id));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
+        // 获取该注解对象对应的onClick字段的值
+        String onClick = annotation.onClick();
 
+        // 处理id，如果成功返回id对应的View，否则返回null
+        View view = doId(activity,field,id);
+
+        if (view!=null){
+            // 如果view不为空，处理onClick，为View设置点击监听器
+            doOnClick(activity,view,onClick);
+        }
+
+    }
     /*
     * 注解单个方法，为该方法中的OnClick注解中的所有id对应的View对象
     * 设置监听器，监听器的处理逻辑就是该方法的逻辑
@@ -117,7 +167,8 @@ public class Injector {
         int[] ids = annotation.ids();
         // 遍历每个id，为每个id对应的View对象设置监听器
         for (int id : ids) {
-            activity.findViewById(id).setOnClickListener(listener);
+            View view = activity.findViewById(id);
+            if (view!=null)view.setOnClickListener(listener);
         }
     }
 
